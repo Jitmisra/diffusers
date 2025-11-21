@@ -507,6 +507,8 @@ class PushToHubMixin:
         safe_serialization: bool = True,
         variant: Optional[str] = None,
         subfolder: Optional[str] = None,
+        include_metadata: bool = True,
+        metadata_format: str = "json",
     ) -> str:
         """
         Upload model, scheduler, or pipeline files to the 🤗 Hugging Face Hub.
@@ -530,6 +532,11 @@ class PushToHubMixin:
                 Whether or not to convert the model weights to the `safetensors` format.
             variant (`str`, *optional*):
                 If specified, weights are saved in the format `pytorch_model.<variant>.bin`.
+            include_metadata (`bool`, *optional*, defaults to `True`):
+                Whether to extract and include model metadata in the repository. Metadata will be saved as
+                `model_metadata.json` or `pipeline_metadata.json` depending on the object type.
+            metadata_format (`str`, *optional*, defaults to `"json"`):
+                Format for the metadata file. Supported formats: "json", "yaml".
 
         Examples:
 
@@ -563,6 +570,28 @@ class PushToHubMixin:
             # Update model card if needed:
             if not subfolder:
                 model_card.save(os.path.join(tmpdir, "README.md"))
+
+            # Extract and save metadata if requested
+            if include_metadata:
+                try:
+                    from .metadata_utils import extract_model_metadata, export_metadata
+
+                    # Determine if this is a pipeline or model
+                    is_pipeline = "Pipeline" in self.__class__.__name__
+                    if is_pipeline:
+                        from .metadata_utils import extract_pipeline_metadata
+
+                        metadata = extract_pipeline_metadata(self)
+                        metadata_filename = "pipeline_metadata"
+                    else:
+                        metadata = extract_model_metadata(self)
+                        metadata_filename = "model_metadata"
+
+                    metadata_path = os.path.join(tmpdir, f"{metadata_filename}.{metadata_format.lower()}")
+                    export_metadata(metadata, metadata_path, format=metadata_format)
+                    logger.info(f"Model metadata saved to {metadata_filename}.{metadata_format.lower()}")
+                except Exception as e:
+                    logger.warning(f"Could not extract and save metadata: {e}")
 
             return self._upload_folder(
                 tmpdir,

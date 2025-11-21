@@ -127,6 +127,12 @@ from .import_utils import (
 )
 from .loading_utils import get_module_from_name, get_submodule_by_name, load_image, load_video
 from .logging import get_logger
+from .metadata_utils import (
+    export_metadata,
+    extract_model_metadata,
+    extract_pipeline_metadata,
+    save_metadata,
+)
 from .outputs import BaseOutput
 from .peft_utils import (
     check_peft_version,
