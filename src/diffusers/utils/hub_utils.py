@@ -574,7 +574,7 @@ class PushToHubMixin:
             # Extract and save metadata if requested
             if include_metadata:
                 try:
-                    from .metadata_utils import extract_model_metadata, export_metadata
+                    from .metadata_utils import export_metadata, extract_model_metadata
 
                     # Determine if this is a pipeline or model
                     is_pipeline = "Pipeline" in self.__class__.__name__

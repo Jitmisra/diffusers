@@ -15,17 +15,15 @@
 """
 Utilities for extracting and exporting model metadata.
 
-This module provides functions to extract comprehensive metadata from diffusion models
-and pipelines, including architecture information, parameter counts, memory footprint,
-quantization details, adapters, and more. The metadata can be exported in various formats
-for integration with model catalogs and sharing platforms.
+This module provides functions to extract comprehensive metadata from diffusion models and pipelines, including
+architecture information, parameter counts, memory footprint, quantization details, adapters, and more. The metadata
+can be exported in various formats for integration with model catalogs and sharing platforms.
 """
 
 import json
-import os
 from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, Optional, Union
 
 from .. import __version__
 from .import_utils import (
@@ -36,10 +34,10 @@ from .import_utils import (
 )
 from .logging import get_logger
 
+
 logger = get_logger(__name__)
 
 if is_torch_available():
-    import torch
     import torch.nn as nn
 
 
@@ -238,8 +236,7 @@ def extract_pipeline_metadata(
     """
     Extract comprehensive metadata from a diffusion pipeline.
 
-    This function extracts metadata from all components of a pipeline including
-    models, schedulers, and processors.
+    This function extracts metadata from all components of a pipeline including models, schedulers, and processors.
 
     Args:
         pipeline:
@@ -551,7 +548,8 @@ def save_metadata(
         is_pipeline (`bool`, *optional*, defaults to `False`):
             Whether the input is a pipeline (True) or a model (False).
         filename (`str`, *optional*):
-            Name of the metadata file (without extension). If None, defaults to "model_metadata" or "pipeline_metadata".
+            Name of the metadata file (without extension). If None, defaults to "model_metadata" or
+            "pipeline_metadata".
         format (`str`, *optional*, defaults to `"json"`):
             Export format. Supported formats: "json", "yaml".
 
@@ -585,4 +583,3 @@ def save_metadata(
     export_metadata(metadata, output_path, format=format)
 
     return output_path.with_suffix(f".{format.lower()}")
-

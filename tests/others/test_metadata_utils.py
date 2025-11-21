@@ -14,7 +14,6 @@
 # limitations under the License.
 
 import json
-import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -209,16 +208,12 @@ class MetadataUtilsTest(unittest.TestCase):
         model = SimpleTestModel()
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            metadata_path = save_metadata(
-                model, tmpdir, is_pipeline=False, filename="custom_metadata", format="json"
-            )
+            metadata_path = save_metadata(model, tmpdir, is_pipeline=False, filename="custom_metadata", format="json")
 
             self.assertTrue(metadata_path.exists())
             self.assertEqual(metadata_path.stem, "custom_metadata")
 
-    @pytest.mark.skipif(
-        not torch.cuda.is_available(), reason="CUDA not available for device info test"
-    )
+    @pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA not available for device info test")
     def test_extract_model_metadata_cuda_device(self):
         """Test metadata extraction with CUDA device."""
         if not torch.cuda.is_available():
@@ -265,6 +260,7 @@ class MetadataUtilsTest(unittest.TestCase):
 
     def test_extract_pipeline_metadata_mock(self):
         """Test pipeline metadata extraction with a mock pipeline-like object."""
+
         # Create a simple mock pipeline
         class MockPipeline:
             def __init__(self):
@@ -279,8 +275,7 @@ class MetadataUtilsTest(unittest.TestCase):
             metadata = extract_pipeline_metadata(pipeline)
             self.assertIn("pipeline_class", metadata)
             self.assertIn("extraction_timestamp", metadata)
-        except Exception as e:
+        except Exception:
             # If it fails, that's okay - we're just testing the function exists
             # Real pipeline tests would be in integration tests
             pass
-
